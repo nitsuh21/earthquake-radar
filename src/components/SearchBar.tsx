@@ -23,7 +23,7 @@ export default function SearchBar({ onSearch, onMagnitudeFilter }: SearchBarProp
   };
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow-lg mb-6">
+    <div className="w-full bg-white p-4 rounded-xl shadow-lg mb-6">
       <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
         <div className="flex-1">
           <input

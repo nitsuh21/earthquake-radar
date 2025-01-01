@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import type { Earthquake } from '@/types/earthquake';
 import SearchBar from './SearchBar';
+import MagnitudeSlider from './MagnitudeSlider';
 import dynamic from 'next/dynamic';
 
 const MapWrapper = dynamic(() => import('./MapWrapper'), {
@@ -45,7 +46,10 @@ export default function EarthquakeList({ earthquakes: initialEarthquakes }: Eart
 
   return (
     <div>
-      <SearchBar onSearch={handleSearch} onMagnitudeFilter={handleMagnitudeFilter} />
+      <div className="flex flex-col items-end mb-4">
+        <MagnitudeSlider value={minMagnitude} onChange={handleMagnitudeFilter} />
+        <SearchBar onSearch={handleSearch} onMagnitudeFilter={handleMagnitudeFilter} />
+      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="h-[600px] bg-white rounded-xl shadow-lg overflow-hidden">

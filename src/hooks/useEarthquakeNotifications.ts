@@ -56,7 +56,7 @@ export function useEarthquakeNotifications(earthquakes: Earthquake[]) {
     async function checkForecasts() {
       try {
         const res = await fetch(
-          `/api/forecasts?country=${userLocation.country}&lat=${userLocation.lat}&lon=${userLocation.lon}`
+          `/api/forecasts?country=${userLocation?.country}&lat=${userLocation?.lat}&lon=${userLocation?.lon}`
         );
         const data = await res.json();
         
