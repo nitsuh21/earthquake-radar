@@ -1,0 +1,4 @@
+react-map-gl @types/mapbox-gl mapbox-gl
+swr
+date-fns
+@heroicons/react
