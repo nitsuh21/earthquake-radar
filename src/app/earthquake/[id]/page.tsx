@@ -1,12 +1,14 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { format } from 'date-fns';
 import type { Earthquake } from '@/types/earthquake';
-import EarthquakeMapSection from '@/components/EarthquakeMapSection';
+import EarthquakeDetails from '@/components/EarthquakeDetails';
 
 async function getEarthquake(id: string) {
-  // Fetch earthquake data from the USGS API
-  const res = await fetch(`https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson`);
+  const res = await fetch(
+    `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson`,
+    { next: { revalidate: 60 } }
+  );
+  
   if (!res.ok) throw new Error('Failed to fetch earthquakes');
 
   const data = await res.json();
@@ -19,57 +21,22 @@ async function getEarthquake(id: string) {
   return earthquake;
 }
 
-export default async function Page({ params }: {
+interface PageProps {
   params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+}
+
+export default async function Page({ params }: PageProps) {
   const earthquake = await getEarthquake(params.id);
-  const [longitude, latitude, depth] = earthquake.geometry.coordinates;
 
   return (
-    <main className="min-h-screen p-4">
-      <Link
+    <>
+      <Link 
         href="/"
-        className="inline-block mb-6 text-blue-600 hover:underline"
+        className="inline-block mb-6 text-blue-600 hover:underline mx-4 mt-4"
       >
         ← Back to all earthquakes
       </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h1 className="text-2xl font-bold mb-4">{earthquake.properties.title}</h1>
-
-          <div className="space-y-4">
-            <div>
-              <h2 className="text-lg font-semibold">Location</h2>
-              <p>{earthquake.properties.place}</p>
-            </div>
-
-            <div>
-              <h2 className="text-lg font-semibold">Time</h2>
-              <p>{format(new Date(earthquake.properties.time), 'PPpp')}</p>
-            </div>
-
-            <div>
-              <h2 className="text-lg font-semibold">Magnitude</h2>
-              <p>{earthquake.properties.mag}</p>
-            </div>
-
-            <div>
-              <h2 className="text-lg font-semibold">Depth</h2>
-              <p>{depth} km</p>
-            </div>
-
-            <div>
-              <h2 className="text-lg font-semibold">Coordinates</h2>
-              <p>Latitude: {latitude}°</p>
-              <p>Longitude: {longitude}°</p>
-            </div>
-          </div>
-        </div>
-
-        <EarthquakeMapSection earthquake={earthquake} />
-      </div>
-    </main>
+      <EarthquakeDetails earthquake={earthquake} />
+    </>
   );
 }
