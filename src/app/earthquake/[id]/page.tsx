@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import type { Earthquake } from '@/types/earthquake';
 import ClientMap from '@/components/ClientMap';
 
 async function getEarthquake(id: string) {
@@ -9,7 +10,7 @@ async function getEarthquake(id: string) {
   if (!res.ok) throw new Error('Failed to fetch earthquakes');
   
   const data = await res.json();
-  const earthquake = data.features.find((eq: any) => eq.id === id);
+  const earthquake = data.features.find((eq: Earthquake) => eq.id === id);
   
   if (!earthquake) {
     notFound();

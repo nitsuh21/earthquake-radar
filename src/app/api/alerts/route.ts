@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
+import type { Earthquake } from '@/types/earthquake';
 
 // Function to calculate risk based on historical data and current seismic activity
-function calculateRisk(userLat: number, userLon: number, recentEarthquakes: any[]) {
+function calculateRisk(userLat: number, userLon: number, recentEarthquakes: Earthquake[]) {
   // Simple risk calculation based on:
   // 1. Number of recent earthquakes in the area
   // 2. Magnitude of recent earthquakes
@@ -62,7 +63,7 @@ export async function GET(request: Request) {
         longitude: lon
       }
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch earthquake data' },
       { status: 500 }
