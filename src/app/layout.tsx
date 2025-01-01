@@ -15,7 +15,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "EQ Radar",
-  description: "Realtime EQ Radar",
+  description: "Real-time earthquake monitoring and alerts",
+  icons: {
+    icon: [
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      }
+    ]
+  }
 };
 
 export default function RootLayout({
