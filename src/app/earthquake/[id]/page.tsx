@@ -1,13 +1,8 @@
-'use client';
-
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import type { Earthquake } from '@/types/earthquake';
-import dynamic from 'next/dynamic';
-
-// Dynamically import the map to avoid SSR issues
-const DynamicMap = dynamic(() => import('@/components/ClientMap'), { ssr: false });
+import EarthquakeMapSection from '@/components/EarthquakeMapSection';
 
 async function getEarthquake(id: string) {
   // Fetch earthquake data from the USGS API
@@ -74,13 +69,7 @@ export default async function EarthquakePage({
           </div>
         </div>
 
-        <div className="h-[600px] bg-white rounded-lg shadow-lg overflow-hidden">
-          <DynamicMap 
-            earthquakes={[earthquake]}
-            center={[longitude, latitude]}
-            zoom={8}
-          />
-        </div>
+        <EarthquakeMapSection earthquake={earthquake} />
       </div>
     </main>
   );
