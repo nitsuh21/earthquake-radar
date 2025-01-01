@@ -9,6 +9,7 @@ interface ClientMapProps {
   earthquakes: Earthquake[];
   center?: [number, number];
   zoom?: number;
+  showAlertsButton?: boolean;
 }
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
@@ -16,7 +17,8 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
 export default function ClientMap({ 
   earthquakes,
   center = [-95, 37],
-  zoom = 3 
+  zoom = 3,
+  showAlertsButton
 }: ClientMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);

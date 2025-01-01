@@ -156,14 +156,19 @@ export default function AlertsPage() {
                   type: 'Feature',
                   geometry: {
                     type: 'Point',
-                    coordinates: [forecast.location.longitude, forecast.location.latitude]
+                    coordinates: [forecast.location.longitude, forecast.location.latitude, 10]
                   },
                   properties: {
-                    mag: forecast.mainshock.magnitude,
+                    mag: forecast.forecast.magnitude.value,
                     place: forecast.mainshock.place,
                     time: forecast.mainshock.time,
-                    forecast: true,
-                    probability: forecast.forecast.magnitude.probability
+                    url: '',  
+                    title: `M${forecast.forecast.magnitude.value} - ${forecast.mainshock.place}`,
+                    alert: null,
+                    depth: 10,  
+                    status: 'forecast',
+                    tsunami: 0,
+                    type: 'forecast'
                   }
                 }))}
                 center={[userLocation.lon, userLocation.lat]}

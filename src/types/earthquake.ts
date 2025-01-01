@@ -1,5 +1,6 @@
 export interface Earthquake {
   id: string;
+  type: string;
   properties: {
     mag: number;
     place: string;
