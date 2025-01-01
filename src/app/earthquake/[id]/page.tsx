@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import type { Earthquake } from '@/types/earthquake';
 import ClientMap from '@/components/ClientMap';
 
 async function getEarthquake(id: string) {
