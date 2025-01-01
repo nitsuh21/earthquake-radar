@@ -2,6 +2,8 @@
 
 A real-time earthquake monitoring application built with Next.js 13, TypeScript, and Mapbox GL JS. Track seismic activity worldwide, receive alerts for significant earthquakes, and view detailed earthquake information with an interactive map interface.
 
+URL: https://earthquake-radar.vercel.app
+
 ## ✨ Features
 
 - **Real-time Earthquake Tracking**: Monitor global seismic activity using USGS data
