@@ -2,8 +2,9 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import type { Earthquake } from '@/types/earthquake';
-import ClientMap from '@/components/ClientMap';
-import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
+
+const ClientMap = dynamic(() => import('@/components/ClientMap'), { ssr: false });
 
 async function getEarthquake(id: string) {
   // Use USGS API for real-time data
@@ -23,9 +24,7 @@ async function getEarthquake(id: string) {
 export default async function EarthquakePage({
   params,
 }: {
-  params: {
-    id: string;
-  };
+  params: { id: string }
 }) {
   const earthquake = await getEarthquake(params.id);
   const [longitude, latitude, depth] = earthquake.geometry.coordinates;
