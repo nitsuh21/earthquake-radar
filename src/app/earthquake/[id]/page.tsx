@@ -19,10 +19,9 @@ async function getEarthquake(id: string) {
   return earthquake;
 }
 
-export default async function EarthquakePage({
-  params,
-}: {
+export default async function Page({ params }: {
   params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const earthquake = await getEarthquake(params.id);
   const [longitude, latitude, depth] = earthquake.geometry.coordinates;
