@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
 interface MagnitudeSliderProps {
   value: number;
   onChange: (value: number) => void;

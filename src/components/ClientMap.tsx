@@ -17,9 +17,8 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
 export default function ClientMap({ 
   earthquakes,
   center = [-95, 37],
-  zoom = 3,
-  showAlertsButton
-}: ClientMapProps) {
+  zoom = 3
+}: Omit<ClientMapProps, 'showAlertsButton'>) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
 

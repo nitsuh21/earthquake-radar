@@ -30,7 +30,11 @@ interface Forecast {
       value: number;
     };
     numAftershocks: number;
-    aftershockSequence: any[];
+    aftershockSequence: Array<{
+      magnitude: number;
+      time: number;
+      probability: number;
+    }>;
   };
 }
 
@@ -173,7 +177,6 @@ export default function AlertsPage() {
                 }))}
                 center={[userLocation.lon, userLocation.lat]}
                 zoom={6}
-                showAlertsButton={false}
               />
             </div>
           </div>

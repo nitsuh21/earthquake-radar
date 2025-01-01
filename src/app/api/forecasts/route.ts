@@ -8,6 +8,52 @@ const ENDPOINTS = {
   SIGNIFICANT_WEEK: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson'
 };
 
+interface USGSFeature {
+  id: string;
+  geometry: {
+    coordinates: [number, number, number];  // [longitude, latitude, depth]
+  };
+  properties: {
+    mag: number;
+    place: string;
+    time: number;
+  };
+}
+
+interface ForecastData {
+  forecast: {
+    timeWindow: string;
+    magnitude: {
+      probability: number;
+      value: number;
+    };
+    numAftershocks: number;
+    sequence: string;
+  };
+}
+
+interface Forecast {
+  id: string;
+  mainshock: {
+    magnitude: number;
+    place: string;
+    time: number;
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  forecast: {
+    timeWindow: string;
+    magnitude: {
+      probability: number;
+      value: number;
+    };
+    numAftershocks: number;
+    aftershockSequence: string;
+  };
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const lat = parseFloat(searchParams.get('lat') || '0');
@@ -17,10 +63,10 @@ export async function GET(request: Request) {
   try {
     // 1. Get recent significant earthquakes
     const sigResponse = await fetch(ENDPOINTS.SIGNIFICANT_WEEK);
-    const sigData = await sigResponse.json();
+    const sigData: { features: USGSFeature[] } = await sigResponse.json();
 
     // Filter earthquakes within radius
-    const nearbySignificant = sigData.features.filter((eq: any) => {
+    const nearbySignificant = sigData.features.filter((eq: USGSFeature) => {
       const eqLat = eq.geometry.coordinates[1];
       const eqLon = eq.geometry.coordinates[0];
       const distance = calculateDistance(lat, lon, eqLat, eqLon);
@@ -29,11 +75,11 @@ export async function GET(request: Request) {
 
     // 2. Get aftershock forecasts for each nearby significant earthquake
     const forecasts = await Promise.all(
-      nearbySignificant.map(async (eq: any) => {
+      nearbySignificant.map(async (eq: USGSFeature) => {
         const forecastUrl = `${ENDPOINTS.AFTERSHOCK_FORECAST}/mainshock/${eq.id}`;
         try {
           const forecastRes = await fetch(forecastUrl);
-          const forecastData = await forecastRes.json();
+          const forecastData: ForecastData = await forecastRes.json();
           
           return {
             id: eq.id,
@@ -66,7 +112,7 @@ export async function GET(request: Request) {
     // Filter out failed forecasts and sort by probability
     const validForecasts = forecasts
       .filter(f => f !== null)
-      .sort((a: any, b: any) => 
+      .sort((a: Forecast, b: Forecast) => 
         b.forecast.magnitude.probability - a.forecast.magnitude.probability
       );
 

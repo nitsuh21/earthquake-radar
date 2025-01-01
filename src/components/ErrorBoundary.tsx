@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h2>
             <p className="text-gray-600 mb-4">
-              We're sorry, but there was an error loading this page. Please try refreshing or go back to the homepage.
+              We&apos;re sorry, but there was an error loading this page. Please try refreshing or go back to the homepage.
             </p>
             <button
               onClick={() => window.location.reload()}
