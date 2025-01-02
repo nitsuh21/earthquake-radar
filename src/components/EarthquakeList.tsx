@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { format } from 'date-fns';
 import type { Earthquake } from '@/types/earthquake';
 import SearchBar from './SearchBar';
@@ -20,6 +19,7 @@ export default function EarthquakeList({ earthquakes: initialEarthquakes }: Eart
   const [filteredEarthquakes, setFilteredEarthquakes] = useState(initialEarthquakes);
   const [searchQuery, setSearchQuery] = useState('');
   const [minMagnitude, setMinMagnitude] = useState(3);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const handleSearch = (location: string) => {
     setSearchQuery(location);
@@ -44,6 +44,10 @@ export default function EarthquakeList({ earthquakes: initialEarthquakes }: Eart
     setFilteredEarthquakes(filtered);
   };
 
+  const toggleExpand = (id: string) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
+
   return (
     <div>
       <div className="flex flex-col items-end mb-4">
@@ -65,10 +69,10 @@ export default function EarthquakeList({ earthquakes: initialEarthquakes }: Eart
           <div className="overflow-auto max-h-[540px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <div className="space-y-3">
               {filteredEarthquakes.map((eq) => (
-                <Link 
-                  href={`/earthquake/${eq.id}`} 
+                <div 
                   key={eq.id}
-                  className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                  onClick={() => toggleExpand(eq.id)}
                 >
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-gray-900">{eq.properties.place}</h2>
@@ -85,7 +89,47 @@ export default function EarthquakeList({ earthquakes: initialEarthquakes }: Eart
                     <span>{format(new Date(eq.properties.time), 'PPp')}</span>
                     <span>Depth: {eq.geometry.coordinates[2].toFixed(1)} km</span>
                   </div>
-                </Link>
+                  
+                  {expandedId === eq.id && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-red-500">Coordinates</p>
+                          <p className="font-medium text-gray-900">{eq.geometry.coordinates[1].toFixed(4)}° N, {eq.geometry.coordinates[0].toFixed(4)}° E</p>
+                        </div>
+                        <div>
+                          <p className="text-red-500">Significance</p>
+                          <p className="font-medium text-gray-900">{eq.properties.sig}</p>
+                        </div>
+                        <div>
+                          <p className="text-red-500">Status</p>
+                          <p className="font-medium text-gray-900 capitalize">{eq.properties.status}</p>
+                        </div>
+                        <div>
+                          <p className="text-red-500">Type</p>
+                          <p className="font-medium text-gray-900 capitalize">{eq.properties.type}</p>
+                        </div>
+                        {eq.properties.tsunami > 0 && (
+                          <div className="col-span-2">
+                            <p className="text-red-600 font-medium">⚠️ Tsunami Alert</p>
+                          </div>
+                        )}
+                        <div className="col-span-2">
+                          <p className="text-gray-600">More Info</p>
+                          <a 
+                            href={eq.properties.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            View on USGS
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>

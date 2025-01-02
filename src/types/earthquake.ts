@@ -2,6 +2,7 @@ export interface Earthquake {
   id: string;
   type: string;
   properties: {
+    sig: string;
     mag: number;
     place: string;
     time: number;

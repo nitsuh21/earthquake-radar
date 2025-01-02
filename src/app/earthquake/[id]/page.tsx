@@ -21,15 +21,14 @@ async function getEarthquake(id: string) {
   return earthquake;
 }
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
+type PageProps = {
+  params: { id: string };
+  searchParams?: Record<string, string | string[] | undefined>;
 }
 
-export default async function Page({ params }: PageProps) {
+const Page = async ({ params, searchParams }: PageProps) => {
   const earthquake = await getEarthquake(params.id);
+  console.log(searchParams);
 
   return (
     <>
@@ -43,3 +42,5 @@ export default async function Page({ params }: PageProps) {
     </>
   );
 }
+
+export default Page;
