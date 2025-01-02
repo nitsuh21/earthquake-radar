@@ -5,7 +5,7 @@ import EarthquakeList from '@/components/EarthquakeList';
 
 async function getEarthquakes() {
   const apiUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://your-production-url.com/api/earthquakes' 
+    ? 'https://earthquake-radar.vercel.app/api/earthquakes' 
     : 'http://localhost:3000/api/earthquakes';
   
   const res = await fetch(apiUrl, { next: { revalidate: 300 } });
