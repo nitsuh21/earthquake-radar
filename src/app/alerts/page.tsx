@@ -165,6 +165,7 @@ export default function AlertsPage() {
                   properties: {
                     mag: forecast.forecast.magnitude.value,
                     place: forecast.mainshock.place,
+                    sig: forecast.forecast.magnitude.value.toFixed(1),
                     time: forecast.mainshock.time,
                     url: '',  
                     title: `M${forecast.forecast.magnitude.value} - ${forecast.mainshock.place}`,
