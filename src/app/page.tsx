@@ -4,13 +4,29 @@ import NotificationHandler from '@/components/NotificationHandler';
 import EarthquakeList from '@/components/EarthquakeList';
 
 async function getEarthquakes() {
-  const apiUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://earthquake-radar.vercel.app/api/earthquakes' 
-    : 'http://localhost:3000/api/earthquakes';
-  
-  const res = await fetch(apiUrl, { next: { revalidate: 300 } });
-  if (!res.ok) throw new Error('Failed to fetch earthquakes');
-  return res.json();
+  try {
+    const apiUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://earthquake-radar.vercel.app/api/earthquakes' 
+      : 'http://localhost:3000/api/earthquakes';
+    
+    const res = await fetch(apiUrl, { 
+      next: { revalidate: 300 },
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching earthquakes:', error);
+    return { features: [] }; // Return empty features array as fallback
+  }
 }
 
 export default async function Home() {
@@ -29,7 +45,13 @@ export default async function Home() {
           </div>
         </div>
 
-        <EarthquakeList earthquakes={earthquakes} />
+        {earthquakes.length > 0 ? (
+          <EarthquakeList earthquakes={earthquakes} />
+        ) : (
+          <div className="text-center py-10">
+            <p className="text-gray-500">Unable to load earthquake data. Please try again later.</p>
+          </div>
+        )}
       </div>
     </main>
   );
