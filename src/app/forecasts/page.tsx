@@ -40,6 +40,7 @@ function transformForecastToEarthquake(forecast: Forecast): Earthquake {
       mag: forecast.forecast.magnitude.value,
       place: forecast.mainshock.place,
       time: forecast.mainshock.time,
+      sig: forecast.mainshock.magnitude.toString(),
       url: '',
       title: `M${forecast.forecast.magnitude.value} - ${forecast.mainshock.place}`,
       alert: null,
