@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const USGS_API_URL = 'https://earthquake.usgs.gov/fdsnws/event/1/query';
+const USGS_API_URL = 'https://earthquake.usgs.gov/fdsnws/event/1/query/';
 
 interface EarthquakeFeature {
   id: string;
@@ -13,7 +13,7 @@ interface EarthquakeFeature {
   };
   geometry: {
     type: string;
-    coordinates: [number, number, number]; // [longitude, latitude, depth]
+    coordinates: [number, number, number]; 
   };
 }
 
