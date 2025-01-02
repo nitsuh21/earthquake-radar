@@ -1,69 +1,29 @@
 import { NextResponse } from 'next/server';
 
-const USGS_API_URL = 'https://earthquake.usgs.gov/fdsnws/event/1/query/';
-
-interface EarthquakeFeature {
-  id: string;
-  properties: {
-    mag: number;
-    place: string;
-    time: number;
-    updated: number;
-    tsunami: number;
-  };
-  geometry: {
-    type: string;
-    coordinates: [number, number, number]; 
-  };
-}
-
-interface EarthquakeData {
-  type: string;
-  metadata: {
-    generated: number;
-    url: string;
-    title: string;
-    count: number;
-  };
-  features: EarthquakeFeature[];
-}
-
-const fetchWithTimeout = async (
-  url: string,
-  options?: RequestInit,
-  timeout: number = 5000
-): Promise<Response> => {
-  return Promise.race([
-    fetch(url, options),
-    new Promise<Response>((_, reject) =>
-      setTimeout(() => reject(new Error('Request timeout')), timeout)
-    ),
-  ]);
-};
-
 export async function GET() {
-  const today = new Date();
-  const startTime = new Date(today.setHours(0, 0, 0, 0)).toISOString();
-
-  const params = new URLSearchParams({
-    format: 'geojson',
-    starttime: startTime,
-    minmagnitude: '3.0',
-  });
-
   try {
-    const response = await fetchWithTimeout(`${USGS_API_URL}?${params}`, {
-      headers: { 'User-Agent': 'EarthquakeRadar/1.0 (example@example.com)' },
+    const response = await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson', {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'earthquake-radar/1.0'
+      },
+      next: { revalidate: 300 } // Cache for 5 minutes
     });
 
     if (!response.ok) {
-      throw new Error(`USGS API error: ${response.statusText}`);
+      throw new Error(`USGS API responded with status: ${response.status}`);
     }
 
-    const data: EarthquakeData = await response.json();
+    const data = await response.json();
+    
+    if (!data || !Array.isArray(data.features)) {
+      throw new Error('Invalid data structure received from USGS API');
+    }
+
     return NextResponse.json(data);
+
   } catch (error) {
-    console.error('Error fetching earthquake data:', error);
+    console.error('Error in /api/earthquakes:', error);
     return NextResponse.json(
       { error: 'Failed to fetch earthquake data' },
       { status: 500 }
